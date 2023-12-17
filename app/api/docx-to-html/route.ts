@@ -17,5 +17,5 @@ export async function POST(req: NextRequest) {
   const html = result.value;
 
   // 將轉換後的 HTML 作為響應返回
-  return NextResponse.json({ html: html });
+  return NextResponse.json({ html });
 }
