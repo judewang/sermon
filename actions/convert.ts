@@ -1,8 +1,12 @@
 "use server";
 
-import { convertToHtml } from "mammoth";
 import { kv } from "@vercel/kv";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import { convertToHtml } from "mammoth";
 import { redirect } from "next/navigation";
+
+dayjs.extend(isoWeek);
 
 export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   const file: File | null = formData.get("file") as unknown as File;
@@ -17,9 +21,10 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   const result = await convertToHtml({ buffer });
   const html = result.value;
   const today = new Date();
-  const key = `sermon-${today.getFullYear()}-${
-    today.getMonth() + 1
-  }-${today.getDate()}`;
+
+  // 使用 Day.js 計算最接近的下一個星期日的日期
+  const nextSunday = dayjs(today).isoWeekday(7);
+  const key = `sermon-${nextSunday.format("YYYY-MM-DD")}`;
 
   await kv.set(key, html);
 

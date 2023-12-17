@@ -1,21 +1,24 @@
-"use client";
+import { kv } from "@vercel/kv";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
 
-import { convertDocxToHtml } from "@/actions/convert";
-import { useFormState, useFormStatus } from "react-dom";
+dayjs.extend(isoWeek);
 
-export default function UploadForm() {
-  const [_, formAction] = useFormState(convertDocxToHtml, null);
-  const { pending } = useFormStatus();
+export default async function HomePage() {
+  const lastSunday = dayjs().startOf("week").format("YYYY-MM-DD");
+  const html = await kv.get<string>(`sermon-${lastSunday}`);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <form action={formAction}>
-          <input type="file" name="file" />
-          <button type="submit" disabled={pending}>
-            {pending ? "Uploading..." : "Upload"}
-          </button>
-        </form>
+      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+        {html ? (
+          <article
+            dangerouslySetInnerHTML={{ __html: html }}
+            className="prose"
+          />
+        ) : (
+          <div>Nothing to share this week {lastSunday}</div>
+        )}
       </div>
     </main>
   );
