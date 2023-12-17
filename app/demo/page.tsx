@@ -2,7 +2,7 @@ import { convertToHtml } from "mammoth";
 import fs from "fs";
 import path from "path";
 
-export default async function ArticlePage() {
+export default async function DemoPage() {
   const docxPath = path.resolve(process.cwd(), "public/talk-file.docx");
   const buffer = fs.readFileSync(docxPath);
   const result = await convertToHtml({ buffer: buffer });

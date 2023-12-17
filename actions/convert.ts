@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+"use server";
+
 import { convertToHtml } from "mammoth";
 import { kv } from "@vercel/kv";
+import { redirect } from "next/navigation";
 
-export async function POST(req: NextRequest) {
-  const data = await req.formData();
-  const file: File | null = data.get("file") as unknown as File;
-
+export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
+  const file: File | null = formData.get("file") as unknown as File;
   if (!file) {
-    return NextResponse.json({ error: "No file provided" });
+    throw new Error("No file provided");
   }
 
   const bytes = await file.arrayBuffer();
@@ -23,5 +23,5 @@ export async function POST(req: NextRequest) {
 
   await kv.set(key, html);
 
-  return NextResponse.redirect(`/articles/${key}`);
+  redirect(`/articles/${key}`);
 }

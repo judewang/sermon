@@ -1,50 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { convertDocxToHtml } from "@/actions/convert";
+import { useFormState, useFormStatus } from "react-dom";
 
 export default function UploadForm() {
-  const [file, setFile] = useState<File>();
-  const [html, setHtml] = useState<string>();
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!file) return;
-
-    try {
-      const data = new FormData();
-      data.set("file", file);
-
-      const res = await fetch("/api/docx-to-html", {
-        method: "POST",
-        body: data,
-      });
-      // handle the error
-      if (!res.ok) throw new Error(await res.text());
-
-      const { html } = await res.json();
-
-      setHtml(html);
-    } catch (e: any) {
-      // Handle errors here
-      console.error(e);
-    }
-  };
+  const [_, formAction] = useFormState(convertDocxToHtml, null);
+  const { pending } = useFormStatus();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        {html ? (
-          <article dangerouslySetInnerHTML={{ __html: html }} />
-        ) : (
-          <form onSubmit={onSubmit}>
-            <input
-              type="file"
-              name="file"
-              onChange={(e) => setFile(e.target.files?.[0])}
-            />
-            <input type="submit" value="Upload" />
-          </form>
-        )}
+        <form action={formAction}>
+          <input type="file" name="file" />
+          <button type="submit" disabled={pending}>
+            {pending ? "Uploading..." : "Upload"}
+          </button>
+        </form>
       </div>
     </main>
   );
