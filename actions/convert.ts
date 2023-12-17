@@ -4,6 +4,7 @@ import { kv } from "@vercel/kv";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { convertToHtml } from "mammoth";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 dayjs.extend(isoWeek);
@@ -26,7 +27,10 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   const nextSunday = dayjs(today).isoWeekday(7);
   const key = `sermon-${nextSunday.format("YYYY-MM-DD")}`;
 
+  await kv.set("latest", key);
   await kv.set(key, html);
 
+  revalidatePath("/");
+  revalidatePath(`/articles/${key}`);
   redirect(`/articles/${key}`);
 }

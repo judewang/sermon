@@ -6,11 +6,12 @@ dayjs.extend(isoWeek);
 
 export default async function HomePage() {
   const lastSunday = dayjs().startOf("week").format("YYYY-MM-DD");
-  const html = await kv.get<string>(`sermon-${lastSunday}`);
+  const latest = await kv.get<string>("latest");
+  const html = await kv.get<string>(latest ?? `sermon-${lastSunday}`);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+      <div className="z-10 items-center justify-center font-mono text-sm lg:flex">
         {html ? (
           <article
             dangerouslySetInnerHTML={{ __html: html }}
