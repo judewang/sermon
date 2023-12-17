@@ -6,7 +6,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import { convertToHtml } from "mammoth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import TurndownService from "turndown";
+import { NodeHtmlMarkdown } from "node-html-markdown";
 
 dayjs.extend(isoWeek);
 
@@ -24,8 +24,7 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   const html = result.value;
 
   // 使用 turndown 將 HTML 轉換為 Markdown
-  const turndownService = new TurndownService();
-  const markdown = turndownService.turndown(html);
+  const markdown = NodeHtmlMarkdown.translate(html);
 
   const today = new Date();
 
