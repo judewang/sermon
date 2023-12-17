@@ -23,7 +23,6 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   const result = await convertToHtml({ buffer });
   const html = result.value;
 
-  // 使用 turndown 將 HTML 轉換為 Markdown
   const markdown = NodeHtmlMarkdown.translate(html);
 
   const today = new Date();

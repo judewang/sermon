@@ -1,3 +1,4 @@
+import { Article } from "@/components/article";
 import { kv } from "@vercel/kv";
 import { notFound } from "next/navigation";
 
@@ -6,14 +7,14 @@ export default async function ArticlePage({
 }: Readonly<{
   params: { slug: string };
 }>) {
-  const html = await kv.get<string>(params.slug);
+  const markdown = await kv.get<string>(params.slug);
 
-  if (!html) notFound();
+  if (!markdown) notFound();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <article dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="z-10 items-center justify-center font-mono text-sm lg:flex">
+        <Article>{markdown}</Article>
       </div>
     </main>
   );
