@@ -34,6 +34,11 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   await kv.set("latest", key);
   await kv.set(key, markdown);
 
+  // TODO:
+  // check 並決定要不要 delete 其他對應語言的 key（刷新 KV）
+  // https://vercel.com/docs/storage/vercel-kv/redis-compatibility#generic
+  // revalidate translation pages
+
   revalidatePath("/");
   redirect(`/articles/${key}`);
 }
