@@ -35,6 +35,5 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   await kv.set(key, markdown);
 
   revalidatePath("/");
-  revalidatePath(`/articles/${key}`);
   redirect(`/articles/${key}`);
 }
