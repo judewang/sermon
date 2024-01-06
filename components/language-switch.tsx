@@ -7,29 +7,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRouter, useSearchParams } from "next/navigation";
-import { z } from "zod";
-
-const defaultLanguage = "ko";
-const languages = [defaultLanguage, "en", "zh-tw"] as const;
+import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
+import { useParams, useRouter } from "next/navigation";
 
 export function LanguageSwitch() {
-  const searchParams = useSearchParams();
+  const params = useParams<Record<string, string | string[]>>();
   const router = useRouter();
-  const allowedLanguages = z.enum(languages);
-  const language = allowedLanguages.safeParse(
-    searchParams.get("lang") ?? defaultLanguage,
-  );
+  const language = allowedLanguages.safeParse(params.locale ?? defaultLanguage);
 
   function handleLanguageChange(value: string) {
     const parsedValue = allowedLanguages.parse(value);
-    const newSearchParams = new URLSearchParams(searchParams);
 
-    parsedValue === defaultLanguage
-      ? newSearchParams.delete("lang")
-      : newSearchParams.set("lang", parsedValue);
-
-    router.push(`?${newSearchParams}`);
+    router.push(
+      parsedValue === defaultLanguage ? "/" : `/translations/${parsedValue}`,
+    );
   }
 
   return (
