@@ -5,6 +5,8 @@ import {
 import { allowedLanguages, foreignLanguages } from "@/lib/language-settings";
 import { Metadata } from "next";
 
+export const revalidate = 60;
+
 export const generateStaticParams = () => {
   return foreignLanguages.map((language) => ({
     locale: language,

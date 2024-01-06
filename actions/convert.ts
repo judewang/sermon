@@ -82,7 +82,6 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   const nextSunday = dayjs(today).isoWeekday(7);
   const key = `sermon-${nextSunday.format("YYYY-MM-DD")}`;
 
-  await kv.set("latest", key);
   await kv.set(key, markdown);
 
   for (const lang of foreignLanguages) {

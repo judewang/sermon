@@ -18,9 +18,11 @@ dayjs.extend(isoWeek);
 export async function getLatestArticle(
   language: z.infer<typeof allowedLanguages>,
 ): Promise<Return> {
+  const today = new Date();
   const lastSunday = dayjs().startOf("week").format("YYYY-MM-DD");
-  const latest = await kv.get<string>("latest");
-  const sermonKey = latest ?? `sermon-${lastSunday}`;
+  const nextSunday = dayjs(today).isoWeekday(7).format("YYYY-MM-DD");
+  const latest = await kv.exists(`sermon-${nextSunday}`);
+  const sermonKey = latest ? `sermon-${nextSunday}` : `sermon-${lastSunday}`;
 
   const markdown = await kv.get<string>(
     language === defaultLanguage ? sermonKey : `${sermonKey}-${language}`,
