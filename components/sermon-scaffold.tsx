@@ -7,7 +7,7 @@ import { LanguageSwitch } from "./language-switch";
 import { Skeleton } from "./ui/skeleton";
 
 interface SermonScaffoldProps {
-  language?: z.infer<typeof allowedLanguages>;
+  language: z.infer<typeof allowedLanguages>;
 }
 
 export async function SermonScaffold({
@@ -32,7 +32,7 @@ export async function SermonScaffold({
 }
 
 export async function generateSermonMetadata(
-  language?: SermonScaffoldProps["language"],
+  language: SermonScaffoldProps["language"],
 ) {
   const { title, description } = await getLatestArticle(language);
 

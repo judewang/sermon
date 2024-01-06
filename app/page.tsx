@@ -2,12 +2,13 @@ import {
   SermonScaffold,
   generateSermonMetadata,
 } from "@/components/sermon-scaffold";
+import { defaultLanguage } from "@/lib/language-settings";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return await generateSermonMetadata();
+  return await generateSermonMetadata(defaultLanguage);
 }
 
 export default function HomePage() {
-  return <SermonScaffold />;
+  return <SermonScaffold language={defaultLanguage} />;
 }

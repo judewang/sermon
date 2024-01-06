@@ -35,7 +35,7 @@ export function LanguageSwitch() {
       <SelectContent>
         <SelectItem value="ko">한국어</SelectItem>
         <SelectItem value="en">English</SelectItem>
-        <SelectItem value="zh-tw">正體中文</SelectItem>
+        <SelectItem value="zh-TW">正體中文</SelectItem>
       </SelectContent>
     </Select>
   );

@@ -1,5 +1,6 @@
 "use server";
 
+import { foreignLanguages } from "@/lib/language-settings";
 import { kv } from "@vercel/kv";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -84,11 +85,9 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   await kv.set("latest", key);
   await kv.set(key, markdown);
 
-  // TODO:
-  // check 並決定要不要 delete 其他對應語言的 key（刷新 KV）
-  // https://vercel.com/docs/storage/vercel-kv/redis-compatibility#generic
-  // revalidate translation pages
-
+  for (const lang of foreignLanguages) {
+    revalidatePath(`/translations/${lang}`);
+  }
   revalidatePath("/");
   redirect(`/articles/${key}`);
 }

@@ -2,6 +2,8 @@ import { z } from "zod";
 
 export const defaultLanguage = "ko";
 
-const languages = [defaultLanguage, "en", "zh-tw"] as const;
+export const allowedLanguages = z.enum([defaultLanguage, "en", "zh-TW"]);
 
-export const allowedLanguages = z.enum(languages);
+export const foreignLanguages = allowedLanguages.options.filter(
+  (lang) => lang !== defaultLanguage,
+);
