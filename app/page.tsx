@@ -1,4 +1,8 @@
 import { Article } from "@/components/article";
+import { Suspense } from "react";
+
+import { LanguageSwitch } from "@/components/langauge-switch";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getLatestArticle } from "@/lib/get-latest-article";
 import { Metadata } from "next";
 
@@ -15,14 +19,17 @@ export default async function HomePage() {
   const { markdown, lastSunday } = await getLatestArticle();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between px-6 py-10 md:py-24">
-      <div className="z-10 items-center justify-center font-mono text-sm lg:flex">
-        {markdown ? (
-          <Article>{markdown}</Article>
-        ) : (
-          <div>Nothing to share this week {lastSunday}</div>
-        )}
+    <main className="flex flex-col items-center justify-between gap-6 px-6 py-10 md:gap-8">
+      <div className="self-start">
+        <Suspense fallback={<Skeleton className="h-10 w-40" />}>
+          <LanguageSwitch />
+        </Suspense>
       </div>
+      {markdown ? (
+        <Article>{markdown}</Article>
+      ) : (
+        <div>Nothing to share this week {lastSunday}</div>
+      )}
     </main>
   );
 }

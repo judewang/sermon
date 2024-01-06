@@ -12,10 +12,8 @@ export default async function ArticlePage({
   if (!markdown) notFound();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 items-center justify-center font-mono text-sm lg:flex">
-        <Article>{markdown}</Article>
-      </div>
+    <main className="flex flex-col items-center justify-between p-24">
+      <Article>{markdown}</Article>
     </main>
   );
 }
