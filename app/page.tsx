@@ -3,20 +3,37 @@ import {
   SermonScaffoldLoading,
   generateSermonMetadata,
 } from "@/components/sermon-scaffold";
-import { defaultLanguage } from "@/lib/language-settings";
+import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-export const revalidate = 60;
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Record<string, string[]>;
+}): Promise<Metadata> {
+  const language = allowedLanguages.safeParse(
+    searchParams.lang ?? defaultLanguage,
+  );
 
-export async function generateMetadata(): Promise<Metadata> {
-  return await generateSermonMetadata(defaultLanguage);
+  return await generateSermonMetadata(
+    language.success ? language.data : defaultLanguage,
+  );
 }
 
-export default function HomePage() {
+export default function HomePage({
+  searchParams,
+}: Readonly<{ searchParams: Record<string, string[]> }>) {
+  const language = allowedLanguages.safeParse(
+    searchParams.lang ?? defaultLanguage,
+  );
+
+  if (!language.success) notFound();
+
   return (
     <Suspense fallback={<SermonScaffoldLoading />}>
-      <SermonScaffold language={defaultLanguage} />
+      <SermonScaffold language={language.data} />
     </Suspense>
   );
 }

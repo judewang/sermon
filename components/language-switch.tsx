@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
 import { Globe } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 
 const languageOptions = [
@@ -21,21 +21,26 @@ const languageOptions = [
 ] satisfies { value: z.infer<typeof allowedLanguages>; display: string }[];
 
 export function LanguageSwitch() {
-  const params = useParams<Record<string, string | string[]>>();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const router = useRouter();
-  const language = allowedLanguages.safeParse(params.locale ?? defaultLanguage);
+  const language = allowedLanguages.safeParse(
+    searchParams.get("lang") ?? defaultLanguage,
+  );
 
   function handleLanguageChange(value: string) {
-    const parsedValue = allowedLanguages.parse(value);
+    const newSearchParams = new URLSearchParams(searchParams);
 
-    router.push(
-      parsedValue === defaultLanguage ? "/" : `/translations/${parsedValue}`,
-    );
+    value === defaultLanguage
+      ? newSearchParams.delete("lang")
+      : newSearchParams.set("lang", value);
+
+    router.push(`${pathname}?${newSearchParams}`);
   }
 
   return (
     <Select
-      defaultValue={language.success ? language.data : "ko"}
+      defaultValue={language.success ? language.data : defaultLanguage}
       onValueChange={handleLanguageChange}
     >
       <SelectTrigger className="w-max">
