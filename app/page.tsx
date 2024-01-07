@@ -1,9 +1,11 @@
 import {
   SermonScaffold,
+  SermonScaffoldLoading,
   generateSermonMetadata,
 } from "@/components/sermon-scaffold";
 import { defaultLanguage } from "@/lib/language-settings";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const revalidate = 60;
 
@@ -12,5 +14,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function HomePage() {
-  return <SermonScaffold language={defaultLanguage} />;
+  return (
+    <Suspense fallback={<SermonScaffoldLoading />}>
+      <SermonScaffold language={defaultLanguage} />
+    </Suspense>
+  );
 }

@@ -1,9 +1,11 @@
 import {
   SermonScaffold,
+  SermonScaffoldLoading,
   generateSermonMetadata,
 } from "@/components/sermon-scaffold";
 import { allowedLanguages, foreignLanguages } from "@/lib/language-settings";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const revalidate = 60;
 
@@ -32,5 +34,9 @@ export default async function TranslatedPage({
 }>) {
   const language = allowedLanguages.parse(params.locale);
 
-  return <SermonScaffold language={language} />;
+  return (
+    <Suspense fallback={<SermonScaffoldLoading />}>
+      <SermonScaffold language={language} />
+    </Suspense>
+  );
 }

@@ -8,7 +8,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
+import { Globe } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { z } from "zod";
+
+const languageOptions = [
+  { value: "ko", display: "한국어" },
+  { value: "en", display: "English" },
+  { value: "zh-TW", display: "正體中文" },
+  { value: "vi", display: "tiếng Việt" },
+  { value: "ru", display: "Русский Язык" },
+] satisfies { value: z.infer<typeof allowedLanguages>; display: string }[];
 
 export function LanguageSwitch() {
   const params = useParams<Record<string, string | string[]>>();
@@ -29,15 +39,15 @@ export function LanguageSwitch() {
       onValueChange={handleLanguageChange}
     >
       <SelectTrigger className="w-max">
-        <span className="mr-2 text-slate-400">Language:</span>
+        <Globe className="mr-2 h-4 w-4" />
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="ko">한국어</SelectItem>
-        <SelectItem value="en">English</SelectItem>
-        <SelectItem value="zh-TW">正體中文</SelectItem>
-        <SelectItem value="vi">tiếng Việt</SelectItem>
-        <SelectItem value="ru">Русский Язык</SelectItem>
+        {languageOptions.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.display}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );
