@@ -1,12 +1,8 @@
-import {
-  SermonScaffold,
-  SermonScaffoldLoading,
-  generateSermonMetadata,
-} from "@/components/sermon-scaffold";
+import { SermonScaffold } from "@/components/sermon-scaffold";
+import { getLatestArticle } from "@/lib/get-latest-article";
 import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 export async function generateMetadata({
   searchParams,
@@ -17,12 +13,14 @@ export async function generateMetadata({
     searchParams.lang ?? defaultLanguage,
   );
 
-  return await generateSermonMetadata(
+  const { title, description } = await getLatestArticle(
     language.success ? language.data : defaultLanguage,
   );
+
+  return { title, description };
 }
 
-export default function HomePage({
+export default async function HomePage({
   searchParams,
 }: Readonly<{ searchParams: Record<string, string[]> }>) {
   const language = allowedLanguages.safeParse(
@@ -31,9 +29,7 @@ export default function HomePage({
 
   if (!language.success) notFound();
 
-  return (
-    <Suspense fallback={<SermonScaffoldLoading />}>
-      <SermonScaffold language={language.data} />
-    </Suspense>
-  );
+  const { markdown } = await getLatestArticle(language.data);
+
+  return <SermonScaffold markdown={markdown} />;
 }
