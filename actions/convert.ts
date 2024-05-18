@@ -1,6 +1,7 @@
 "use server";
 
 import { kv } from "@vercel/kv";
+import { splitMarkdown } from "@/lib/split-markdown";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { convertToHtml } from "mammoth";
@@ -73,6 +74,7 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   const html = result.value;
 
   const markdown = NodeHtmlMarkdown.translate(html);
+  const markdownChunks = splitMarkdown(markdown);
 
   const today = new Date();
 
@@ -80,7 +82,7 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   const nextSunday = dayjs(today).isoWeekday(7);
   const key = `sermon-${nextSunday.format("YYYY-MM-DD")}`;
 
-  await kv.set(key, markdown);
+  await kv.set<string[]>(key, markdownChunks);
 
   redirect(`/articles/${key}`);
 }
