@@ -1,14 +1,19 @@
-import { cn } from "@/lib/utils";
+import { allowedLanguages } from "@/lib/language-settings";
 import { Suspense } from "react";
+import { z } from "zod";
 import { Article } from "./article";
 import { LanguageSwitch } from "./language-switch";
 import { Skeleton } from "./ui/skeleton";
 
 interface SermonScaffoldProps {
-  markdown: string | null;
+  markdownChunks: string[] | string;
+  language: z.infer<typeof allowedLanguages>;
 }
 
-export function SermonScaffold({ markdown }: Readonly<SermonScaffoldProps>) {
+export function SermonScaffold({
+  markdownChunks,
+  language,
+}: Readonly<SermonScaffoldProps>) {
   return (
     <main className="flex flex-col items-center justify-between gap-6 px-6 py-10 md:gap-8">
       <div className="self-start">
@@ -16,31 +21,15 @@ export function SermonScaffold({ markdown }: Readonly<SermonScaffoldProps>) {
           <LanguageSwitch />
         </Suspense>
       </div>
-      {markdown ? (
-        <Article>{markdown}</Article>
-      ) : (
-        <div>Nothing to share this week</div>
+      {(Array.isArray(markdownChunks) ? markdownChunks : [markdownChunks]).map(
+        (chunk) => (
+          <Article
+            key={`${chunk}-${language}`}
+            language={language}
+            raw={chunk}
+          />
+        ),
       )}
     </main>
-  );
-}
-
-export function SermonScaffoldLoading() {
-  return (
-    <div className="flex flex-col items-center justify-between gap-6 px-6 py-10 md:gap-8">
-      <div className="self-start">
-        <Skeleton className="h-10 w-40" />
-      </div>
-      <div className="prose prose-xl flex w-full flex-col gap-6">
-        {Array(15)
-          .fill(undefined)
-          .map((_, index) => (
-            <Skeleton
-              key={index}
-              className={cn("h-6", (index + 1) % 5 ? "w-full" : "mb-6 w-2/3")}
-            />
-          ))}
-      </div>
-    </div>
   );
 }

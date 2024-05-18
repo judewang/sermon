@@ -6,6 +6,7 @@ export const env = createEnv({
     PAPAGO_API_URL: z.string().url(),
     PAPAGO_CLIENT_ID: z.string(),
     PAPAGO_SECRET: z.string(),
+    PERPLEXITY_API_KEY: z.string(),
     BASE_URL: z
       .string()
       .url()
@@ -14,6 +15,7 @@ export const env = createEnv({
           ? `https://${process.env.VERCEL_URL}`
           : "http://localhost:3000",
       ),
+    NODE_ENV: z.string().default("development"),
   },
   experimental__runtimeEnv: {},
 });

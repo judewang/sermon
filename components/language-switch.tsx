@@ -12,7 +12,7 @@ import { Globe } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 
-const languageOptions = [
+export const languageOptions = [
   { value: "ko", display: "한국어" },
   { value: "en", display: "English" },
   { value: "zh-TW", display: "正體中文" },

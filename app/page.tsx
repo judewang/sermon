@@ -4,18 +4,8 @@ import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Record<string, string[]>;
-}): Promise<Metadata> {
-  const language = allowedLanguages.safeParse(
-    searchParams.lang ?? defaultLanguage,
-  );
-
-  const { title, description } = await getLatestArticle(
-    language.success ? language.data : defaultLanguage,
-  );
+export async function generateMetadata(): Promise<Metadata> {
+  const { title, description } = await getLatestArticle();
 
   return { title, description };
 }
@@ -29,7 +19,11 @@ export default async function HomePage({
 
   if (!language.success) notFound();
 
-  const { markdown } = await getLatestArticle(language.data);
+  const { markdownChunks } = await getLatestArticle();
 
-  return <SermonScaffold markdown={markdown} />;
+  if (!markdownChunks) return <div>Nothing to share this week</div>;
+
+  return (
+    <SermonScaffold markdownChunks={markdownChunks} language={language.data} />
+  );
 }
