@@ -12,7 +12,7 @@ export default async function ArticlePage({
   if (!markdown) notFound();
 
   return (
-    <main className="flex flex-col items-center justify-between p-24">
+    <main className="flex flex-col items-center justify-between gap-6 px-6 py-10 md:gap-8">
       <Article>{markdown}</Article>
     </main>
   );
