@@ -23,7 +23,11 @@ export function SermonScaffold({
       </div>
       {(Array.isArray(markdownChunks) ? markdownChunks : [markdownChunks]).map(
         (chunk) => (
-          <Article key={chunk} language={language} raw={chunk} />
+          <Article
+            key={`${chunk}-${language}`}
+            language={language}
+            raw={chunk}
+          />
         ),
       )}
     </main>

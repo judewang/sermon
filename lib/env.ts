@@ -15,6 +15,7 @@ export const env = createEnv({
           ? `https://${process.env.VERCEL_URL}`
           : "http://localhost:3000",
       ),
+    NODE_ENV: z.string().default("development"),
   },
   experimental__runtimeEnv: {},
 });

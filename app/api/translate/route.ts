@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   }
 
   const result = await streamText({
-    model: perplexity("llama-3-sonar-small-32k-online"),
+    model: perplexity("llama-3-sonar-large-32k-online"),
     messages,
   });
 

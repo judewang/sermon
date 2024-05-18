@@ -1,7 +1,8 @@
 "use server";
 
-import { kv } from "@vercel/kv";
+import { env } from "@/lib/env";
 import { splitMarkdown } from "@/lib/split-markdown";
+import { kv } from "@vercel/kv";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { convertToHtml } from "mammoth";
@@ -80,7 +81,10 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
 
   // 使用 Day.js 計算最接近的下一個星期日的日期
   const nextSunday = dayjs(today).isoWeekday(7);
-  const key = `sermon-${nextSunday.format("YYYY-MM-DD")}`;
+  const key =
+    env.NODE_ENV === "development"
+      ? `test`
+      : `sermon-${nextSunday.format("YYYY-MM-DD")}`;
 
   await kv.set<string[]>(key, markdownChunks);
 

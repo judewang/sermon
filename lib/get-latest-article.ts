@@ -1,10 +1,7 @@
 import { kv } from "@vercel/kv";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
-import { z } from "zod";
-import { allowedLanguages, defaultLanguage } from "./language-settings";
-import { splitMarkdown } from "./split-markdown";
-import { translateWithPapago } from "./translate-with-papago";
+import { env } from "./env";
 
 interface Return {
   markdownChunks: string[] | string | null;
@@ -22,13 +19,20 @@ export async function getLatestArticle(): Promise<Return> {
   const latest = await kv.exists(`sermon-${nextSunday}`);
   const sermonKey = latest ? `sermon-${nextSunday}` : `sermon-${lastSunday}`;
 
-  const markdownChunks = await kv.get<string[] | string>(sermonKey);
+  const markdownChunks = await kv.get<string[] | string>(
+    env.NODE_ENV === "development" ? "test" : sermonKey,
+  );
 
   return generateArticleData(markdownChunks, lastSunday);
 }
 
-function generateArticleData(markdownChunks: string[] | string | null, lastSunday: string) {
-  const paragraphs = Array.isArray(markdownChunks) ? markdownChunks[0]?.split(/\n{2,}/) : markdownChunks?.split(/\n{2,}/);
+function generateArticleData(
+  markdownChunks: string[] | string | null,
+  lastSunday: string,
+) {
+  const paragraphs = Array.isArray(markdownChunks)
+    ? markdownChunks[0]?.split(/\n{2,}/)
+    : markdownChunks?.split(/\n{2,}/);
 
   return {
     markdownChunks,

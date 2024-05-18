@@ -2,7 +2,7 @@
 
 import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
 import { useChat } from "ai/react";
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { z } from "zod";
@@ -15,12 +15,24 @@ interface ArticleProps {
 
 export function Article({ language, raw }: ArticleProps) {
   const id = useId();
+  const [isThinking, setIsThinking] = useState(true);
   const { messages, isLoading, input, handleSubmit } = useChat({
     api: "/api/translate",
+    streamMode: "text",
     initialMessages: [
       { id, role: "system", content: "你是一個精通聖經的神學家" },
     ],
-    initialInput: `請幫我將這段用韓語寫成的牧師講道內容用 ${language} 的語言翻譯，回覆時請回覆翻譯後的講道內容即可，不要包含任何問候或者是系統相關資訊 ${raw}`,
+    initialInput: `
+      Translate the following Korean sermon article into target language.
+      Don't include any greeting or system related messages.
+      Please be careful to preserve the Markdown syntax, including spaces.
+      Source language code: ko
+      Target language code: ${language}
+      ${raw}
+    `,
+    onResponse() {
+      setIsThinking(false);
+    },
   });
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -33,7 +45,7 @@ export function Article({ language, raw }: ArticleProps) {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <input hidden value={input} />
+        <input hidden readOnly value={input} />
         <button
           disabled={isLoading}
           type="submit"
@@ -44,16 +56,14 @@ export function Article({ language, raw }: ArticleProps) {
         </button>
       </form>
       <article className="container prose prose-xl prose-zinc bg-white py-6 md:prose-2xl prose-headings:mt-0 prose-h1:mb-3">
-        {language !== defaultLanguage && !messages.length ? (
+        {language !== defaultLanguage && isThinking ? (
           <ArticleLoading />
         ) : (
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {language === defaultLanguage
               ? raw
-              : messages
-                  .filter(({ role }) => role === "assistant")
-                  .map((message) => message.content)
-                  .join("\n")}
+              : messages.find(({ role }) => role === "assistant")?.content ||
+                ""}
           </ReactMarkdown>
         )}
       </article>
