@@ -6,6 +6,7 @@ import { kv } from "@vercel/kv";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { convertToHtml } from "mammoth";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { NodeHtmlMarkdown } from "node-html-markdown";
 
@@ -88,5 +89,6 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
 
   await kv.set<string[]>(key, markdownChunks);
 
+  revalidatePath("/");
   redirect(`/articles/${key}`);
 }
