@@ -1,5 +1,6 @@
 "use client";
 
+import { cacheTranslation } from "@/actions/cache-translation";
 import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
 import { useChat } from "ai/react";
 import { useEffect, useId, useRef, useState } from "react";
@@ -15,13 +16,17 @@ interface ArticleProps {
 
 export function Article({ language, raw }: ArticleProps) {
   const id = useId();
+  const key = raw;
   const [isThinking, setIsThinking] = useState(true);
   const { messages, isLoading, input, handleSubmit } = useChat({
     api: "/api/translate",
-    streamMode: "text",
     initialMessages: [
       { id, role: "system", content: "你是一個精通聖經的神學家" },
     ],
+    streamMode: "text",
+    body: {
+      key,
+    },
     initialInput: `
       Translate the following Korean sermon article into target language.
       Don't include any greeting or system related messages.
@@ -30,6 +35,9 @@ export function Article({ language, raw }: ArticleProps) {
       Target language code: ${language}
       ${raw}
     `,
+    async onFinish(message) {
+      await cacheTranslation(key, message.content);
+    },
     onResponse() {
       setIsThinking(false);
     },
@@ -37,10 +45,10 @@ export function Article({ language, raw }: ArticleProps) {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (isLoading || language === defaultLanguage) return;
+    if (isLoading || language === defaultLanguage || !input) return;
 
     submitButtonRef.current?.click();
-  }, [isLoading, language]);
+  }, [isLoading, language, input]);
 
   return (
     <>

@@ -90,5 +90,6 @@ export async function convertDocxToHtml(_prev: unknown, formData: FormData) {
   await kv.set<string[]>(key, markdownChunks);
 
   revalidatePath("/");
+  revalidatePath(`/articles/${key}`);
   redirect(`/articles/${key}`);
 }

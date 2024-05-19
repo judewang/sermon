@@ -4,7 +4,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import { env } from "./env";
 
 interface Return {
-  markdownChunks: string[] | string | null;
+  markdownChunks: string[] | null;
   lastSunday: string;
   title: string;
   description: string;
@@ -19,7 +19,7 @@ export async function getLatestArticle(): Promise<Return> {
   const latest = await kv.exists(`sermon-${nextSunday}`);
   const sermonKey = latest ? `sermon-${nextSunday}` : `sermon-${lastSunday}`;
 
-  const markdownChunks = await kv.get<string[] | string>(
+  const markdownChunks = await kv.get<string[]>(
     env.NODE_ENV === "development" ? "test" : sermonKey,
   );
 
@@ -27,12 +27,10 @@ export async function getLatestArticle(): Promise<Return> {
 }
 
 function generateArticleData(
-  markdownChunks: string[] | string | null,
+  markdownChunks: string[] | null,
   lastSunday: string,
 ) {
-  const paragraphs = Array.isArray(markdownChunks)
-    ? markdownChunks[0]?.split(/\n{2,}/)
-    : markdownChunks?.split(/\n{2,}/);
+  const paragraphs = markdownChunks?.[0]?.split(/\n{2,}/);
 
   return {
     markdownChunks,
