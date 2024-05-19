@@ -8,6 +8,8 @@ const perplexity = createOpenAI({
   baseURL: "https://api.perplexity.ai/",
 });
 
+export const runtime = "edge";
+
 export async function POST(req: Request) {
   const { messages, key } = await req.json();
   const cached = await kv.get<string>(key);
