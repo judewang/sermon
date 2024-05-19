@@ -20,7 +20,8 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_DEV_MODE: z
       .string()
-      .transform((s) => s !== "false" && s !== "0"),
+      .optional()
+      .transform((s) => s === "true" || s === "1"),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_DEV_MODE: process.env.NEXT_PUBLIC_DEV_MODE,
