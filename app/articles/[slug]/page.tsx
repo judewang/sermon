@@ -8,7 +8,7 @@ export default async function ArticlePage({
 }: Readonly<{
   params: { slug: string };
 }>) {
-  const markdownChunks = await kv.get<string[] | string>(params.slug);
+  const markdownChunks = await kv.get<string[]>(params.slug);
 
   if (!markdownChunks) notFound();
 

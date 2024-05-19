@@ -4,6 +4,8 @@ import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const { title, description } = await getLatestArticle();
 

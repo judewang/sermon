@@ -1,7 +1,7 @@
 import { env } from "@/lib/env";
 import { createOpenAI } from "@ai-sdk/openai";
 import { kv } from "@vercel/kv";
-import { StreamingTextResponse, streamText } from "ai";
+import { streamText } from "ai";
 
 const perplexity = createOpenAI({
   apiKey: env.PERPLEXITY_API_KEY,
@@ -9,8 +9,7 @@ const perplexity = createOpenAI({
 });
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
-  const key = JSON.stringify(messages);
+  const { messages, key } = await req.json();
   const cached = await kv.get<string>(key);
 
   if (cached) {
@@ -22,11 +21,5 @@ export async function POST(req: Request) {
     messages,
   });
 
-  const stream = result.toAIStream({
-    async onFinal(completion) {
-      await kv.set<string>(key, completion);
-    },
-  });
-
-  return new StreamingTextResponse(stream);
+  return result.toTextStreamResponse();
 }

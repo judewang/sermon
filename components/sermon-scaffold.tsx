@@ -6,7 +6,7 @@ import { LanguageSwitch } from "./language-switch";
 import { Skeleton } from "./ui/skeleton";
 
 interface SermonScaffoldProps {
-  markdownChunks: string[] | string;
+  markdownChunks: string[];
   language: z.infer<typeof allowedLanguages>;
 }
 
@@ -21,15 +21,9 @@ export function SermonScaffold({
           <LanguageSwitch />
         </Suspense>
       </div>
-      {(Array.isArray(markdownChunks) ? markdownChunks : [markdownChunks]).map(
-        (chunk) => (
-          <Article
-            key={`${chunk}-${language}`}
-            language={language}
-            raw={chunk}
-          />
-        ),
-      )}
+      {markdownChunks.map((chunk) => (
+        <Article key={`${chunk}-${language}`} language={language} raw={chunk} />
+      ))}
     </main>
   );
 }
