@@ -17,5 +17,12 @@ export const env = createEnv({
       ),
     NODE_ENV: z.string().default("development"),
   },
-  experimental__runtimeEnv: {},
+  client: {
+    NEXT_PUBLIC_DEV_MODE: z
+      .string()
+      .transform((s) => s !== "false" && s !== "0"),
+  },
+  experimental__runtimeEnv: {
+    NEXT_PUBLIC_DEV_MODE: process.env.NEXT_PUBLIC_DEV_MODE,
+  },
 });
