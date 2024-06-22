@@ -5,6 +5,7 @@ export const defaultLanguage = "ko";
 export const allowedLanguages = z.enum([
   defaultLanguage,
   "en",
+  "zh-CN",
   "zh-TW",
   "vi",
   "ru",

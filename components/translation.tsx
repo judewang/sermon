@@ -19,6 +19,22 @@ export function Translation({ language, raw }: ArticleProps) {
   const id = useId();
   const key = `${language}-${raw}`;
   const [isThinking, setIsThinking] = useState(true);
+
+  let targetLanguage;
+  let targetLanguageSample;
+  switch (language) {
+    case "zh-TW":
+      targetLanguage = "Traditional Chinese";
+      targetLanguageSample = "生命戰勝死亡";
+      break;
+    case "zh-CN":
+      targetLanguage = "Simplified Chinese";
+      targetLanguageSample = "生命战胜死亡";
+      break;
+    default:
+      targetLanguage = "target language";
+  }
+
   const { messages, isLoading, input, handleSubmit } = useChat({
     api: "/api/translate",
     initialMessages: [
@@ -28,7 +44,8 @@ export function Translation({ language, raw }: ArticleProps) {
     body: {
       key,
     },
-    initialInput: `Translate the following Korean sermon article into ${language === "zh-TW" ? "Traditional Chinese" : "target language"} in its entirety, without omitting or adding any content. Provide a complete and faithful translation.
+    initialInput: `Translate the following Korean sermon article into ${targetLanguage} in its entirety, without omitting or adding any content. Provide a complete and faithful translation.
+    } in its entirety, without omitting or adding any content. Provide a complete and faithful translation.
 
 Don't include any greeting or system related messages.
 Please be careful to preserve the Markdown syntax, including spaces.
@@ -39,7 +56,7 @@ Source text:
 ${raw}
 
 Example output (for reference only, do not include in translation):
-${language === "zh-TW" ? "生命戰勝死亡" : ""}
+${targetLanguageSample}
 `,
     async onFinish(message) {
       await cacheTranslation(key, message.content);
@@ -67,7 +84,9 @@ ${language === "zh-TW" ? "生命戰勝死亡" : ""}
         <button
           disabled={isLoading}
           type="submit"
-          className={cn({ hidden: !env.NEXT_PUBLIC_DEV_MODE })}
+          className={cn("rounded-lg border px-4 py-2 text-sm", {
+            hidden: !env.NEXT_PUBLIC_DEV_MODE,
+          })}
           ref={submitButtonRef}
         >
           Translate

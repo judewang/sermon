@@ -16,6 +16,7 @@ export const languageOptions = [
   { value: "ko", display: "한국어" },
   { value: "en", display: "English" },
   { value: "zh-TW", display: "正體中文" },
+  { value: "zh-CN", display: "简体中文" },
   { value: "vi", display: "tiếng Việt" },
   { value: "ru", display: "Русский Язык" },
 ] satisfies { value: z.infer<typeof allowedLanguages>; display: string }[];
