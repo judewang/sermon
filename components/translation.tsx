@@ -25,11 +25,13 @@ export function Translation({ language, raw }: ArticleProps) {
   switch (language) {
     case "zh-TW":
       targetLanguage = "Traditional Chinese";
-      targetLanguageSample = "生命戰勝死亡";
+      targetLanguageSample =
+        "「司提反滿有恩惠和能力，在民間行了大奇事和神蹟。」使徒行傳 6:8";
       break;
     case "zh-CN":
       targetLanguage = "Simplified Chinese";
-      targetLanguageSample = "生命战胜死亡";
+      targetLanguageSample =
+        "「司提反满有恩惠和能力，在民间行了大奇事和神迹。」使徒行传 6:8";
       break;
     default:
       targetLanguage = "target language";
