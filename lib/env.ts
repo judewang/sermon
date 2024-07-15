@@ -7,7 +7,6 @@ export const env = createEnv({
     PAPAGO_CLIENT_ID: z.string(),
     PAPAGO_SECRET: z.string(),
     PERPLEXITY_API_KEY: z.string(),
-    OPENAI_API_KEY: z.string(),
     BASE_URL: z
       .string()
       .url()
