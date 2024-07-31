@@ -19,7 +19,7 @@ export async function POST(req: Request) {
   }
 
   const result = await streamText({
-    model: perplexity("llama-3-sonar-large-32k-chat"),
+    model: perplexity("llama-3.1-sonar-large-128k-chat"),
     messages,
   });
 
