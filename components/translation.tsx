@@ -17,20 +17,15 @@ interface ArticleProps {
 
 function getLanguageData(language: z.infer<typeof allowedLanguages>): {
 	targetLanguage: string;
-	targetLanguageSample?: string;
 } {
 	switch (language) {
 		case "zh-TW":
 			return {
 				targetLanguage: "Traditional Chinese",
-				targetLanguageSample:
-					"「司提反滿有恩惠和能力，在民間行了大奇事和神蹟。」使徒行傳 6:8",
 			};
 		case "zh-CN":
 			return {
 				targetLanguage: "Simplified Chinese",
-				targetLanguageSample:
-					"「司提反满有恩惠和能力，在民间行了大奇事和神迹。」使徒行传 6:8",
 			};
 		default:
 			return {
