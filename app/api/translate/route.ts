@@ -1,6 +1,5 @@
 import { env } from "@/lib/env";
 import { createOpenAI } from "@ai-sdk/openai";
-import { kv } from "@vercel/kv";
 import { streamText } from "ai";
 
 const perplexity = createOpenAI({
@@ -11,12 +10,7 @@ const perplexity = createOpenAI({
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-	const { messages, key } = await req.json();
-	const cached = await kv.get<string>(key);
-
-	if (cached) {
-		return new Response(cached);
-	}
+	const { messages } = await req.json();
 
 	const result = await streamText({
 		model: perplexity("llama-3.1-sonar-large-128k-chat"),
