@@ -49,11 +49,14 @@ export function Translation({ language, raw }: ArticleProps) {
 		body: {
 			key,
 		},
-		initialInput: `Translate the source text which is parts of a Korean sermon article into ${targetLanguage}, following these instructions:
+		initialInput: `Translate the following text, which is a part of a Korean sermon, into ${targetLanguage}. Follow these instructions:
 
-- Don't include any greeting or system related messages.
-- Translate the entire content without summarizing or omitting any parts. Provide a complete and faithful translation of the full text.
+- This is a portion of a sermon, not the complete sermon.
+- Translate the entire content without summarizing or omitting any parts. Provide a complete and faithful translation of the given text.
 - Maintain the original structure, paragraphs, and formatting of the source text in the translation.
+- Do not include any introductory phrases like "Here's the translation" or "The translated content is as follows". Start directly with the translated content.
+- Do not add any concluding remarks or notes at the end of the translation.
+- Don't include any greeting or system-related messages.
 - Ensure clear distinction between Traditional Chinese (zh-TW) and Simplified Chinese (zh-CN). Do not confuse or mix these two Chinese variants.
 - Here are examples of Traditional Chinese and Simplified Chinese to illustrate the differences:
   Traditional Chinese: 「耶和華是我的牧者，我必不致缺乏。」詩篇 23:1

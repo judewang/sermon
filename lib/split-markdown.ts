@@ -1,4 +1,4 @@
-export function splitMarkdown(mdString: string, maxLength = 5000): string[] {
+export function splitMarkdown(mdString: string, maxLength = 3500): string[] {
 	const paragraphs = mdString.split(/\n{2,}/);
 	const result: string[] = [];
 	let current = "";
