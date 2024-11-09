@@ -2,9 +2,15 @@ import { env } from "@/lib/env";
 import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 
-const perplexity = createOpenAI({
-	apiKey: env.PERPLEXITY_API_KEY,
-	baseURL: "https://api.perplexity.ai/",
+// const perplexity = createOpenAI({
+// 	name: "perplexity",
+// 	apiKey: env.PERPLEXITY_API_KEY,
+// 	baseURL: "https://api.perplexity.ai/",
+// });
+const xai = createOpenAI({
+	name: "xai",
+	apiKey: env.XAI_API_KEY,
+	baseURL: "https://api.x.ai/v1",
 });
 
 export const runtime = "edge";
@@ -13,7 +19,7 @@ export async function POST(req: Request) {
 	const { messages } = await req.json();
 
 	const result = await streamText({
-		model: perplexity("llama-3.1-70b-instruct"),
+		model: xai("grok-beta"),
 		messages,
 	});
 

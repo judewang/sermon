@@ -4,6 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
 	server: {
 		PERPLEXITY_API_KEY: z.string(),
+		XAI_API_KEY: z.string(),
 		BASE_URL: z
 			.string()
 			.url()
