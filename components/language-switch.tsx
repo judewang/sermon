@@ -19,6 +19,8 @@ export const languageOptions = [
   { value: "zh-CN", display: "简体中文" },
   { value: "vi", display: "tiếng Việt" },
   { value: "ru", display: "Русский Язык" },
+  { value: "th", display: "ไทย" },
+
 ] satisfies { value: z.infer<typeof allowedLanguages>; display: string }[];
 
 export function LanguageSwitch() {
