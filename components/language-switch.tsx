@@ -20,7 +20,7 @@ export const languageOptions = [
   { value: "vi", display: "tiếng Việt" },
   { value: "ru", display: "Русский Язык" },
   { value: "th", display: "ไทย" },
-
+  { value: "lo", display: "ພາສາລາ" }
 ] satisfies { value: z.infer<typeof allowedLanguages>; display: string }[];
 
 export function LanguageSwitch() {
