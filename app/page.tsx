@@ -17,9 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title, description };
 }
 
-export default async function HomePage({
-  searchParams,
-}: Readonly<{ searchParams: Record<string, string[]> }>) {
+export default async function HomePage(props: Readonly<{ searchParams: Record<string, string[]> }>) {
+  const searchParams = await props.searchParams;
   const language = allowedLanguages.safeParse(
     searchParams.lang ?? defaultLanguage,
   );
