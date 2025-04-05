@@ -93,10 +93,10 @@ export async function processDocx(file: File): Promise<ProcessingResult> {
 
 	const html = result.value;
 	const markdown = NodeHtmlMarkdown.translate(html);
-	const markdownChunks = splitMarkdown(markdown);
+	// const markdownChunks = splitMarkdown(markdown);
 
 	return {
-		markdown: markdownChunks,
+		markdown: [markdown],
 		metadata: {
 			originalFileName: file.name,
 			fileSize: file.size,

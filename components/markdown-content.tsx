@@ -6,7 +6,7 @@ export function MarkdownContent({ children }: { children: string }) {
 		<ReactMarkdown
 			remarkPlugins={[remarkGfm]}
 			components={{
-				a: ({ node, children }) => <span>{children}</span>,
+				a: ({ _, children }) => <span>{children}</span>,
 			}}
 		>
 			{children}

@@ -1,16 +1,12 @@
 "use server";
 
 import { env } from "@/lib/env";
-import {
-	type allowedLanguages as AllowedLanguagesType,
-	allowedLanguages,
-} from "@/lib/language-settings";
+import type { allowedLanguages as AllowedLanguagesType } from "@/lib/language-settings";
 import { createXai } from "@ai-sdk/xai";
 import { streamText } from "ai";
 import { createStreamableValue } from "ai/rsc";
 import type { z } from "zod";
 
-// 初始化 OpenAI 客戶端
 const xai = createXai({
 	apiKey: env.XAI_API_KEY,
 });
@@ -67,7 +63,7 @@ export async function translateText(
 	(async () => {
 		// 構建翻譯提示訊息
 		const { textStream } = streamText({
-			model: xai("grok-beta"),
+			model: xai("grok-2"),
 			prompt: `Translate the following text, which is a part of a Korean sermon, into ${targetLanguage}. Follow these instructions:
 
 - This is a portion of a sermon, not the complete sermon.

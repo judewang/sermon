@@ -1,14 +1,10 @@
 "use client";
 
 import { translateText } from "@/app/actions";
-import {
-	type allowedLanguages as AllowedLanguagesType,
-	allowedLanguages,
-} from "@/lib/language-settings";
+import type { allowedLanguages as AllowedLanguagesType } from "@/lib/language-settings";
 import { readStreamableValue } from "ai/rsc";
 import { useEffect, useState } from "react";
 import type { z } from "zod";
-import { ArticleLoading } from "./article-loading";
 import { MarkdownContent } from "./markdown-content";
 
 interface ArticleProps {

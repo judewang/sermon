@@ -20,7 +20,7 @@ export async function generateStorageKey(customKey?: string): Promise<string> {
 	const nextSunday = dayjs(today).isoWeekday(7);
 
 	return env.NODE_ENV === "development"
-		? `test-${Date.now()}`
+		? "test"
 		: `sermon-${nextSunday.format("YYYY-MM-DD")}`;
 }
 
