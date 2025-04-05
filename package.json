@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@ai-sdk/openai": "^1.0.0",
+		"@ai-sdk/xai": "^1.2.7",
 		"@radix-ui/react-select": "^2.1.6",
 		"@t3-oss/env-nextjs": "^0.7.3",
 		"@tailwindcss/typography": "^0.5.13",
