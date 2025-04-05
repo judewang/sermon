@@ -7,9 +7,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
+import {
+	type allowedLanguages,
+	defaultLanguage,
+} from "@/lib/language-settings";
 import { Globe } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type { z } from "zod";
 
 export const languageOptions = [
@@ -22,29 +25,24 @@ export const languageOptions = [
 	{ value: "th", display: "ไทย" },
 ] satisfies { value: z.infer<typeof allowedLanguages>; display: string }[];
 
-export function LanguageSwitch() {
-	const searchParams = useSearchParams();
-	const pathname = usePathname();
+interface LanguageSwitchProps {
+	currentLanguage: z.infer<typeof allowedLanguages>;
+}
+
+export function LanguageSwitch({ currentLanguage }: LanguageSwitchProps) {
 	const router = useRouter();
-	const language = allowedLanguages.safeParse(
-		searchParams.get("lang") ?? defaultLanguage,
-	);
 
 	function handleLanguageChange(value: string) {
-		const newSearchParams = new URLSearchParams(searchParams);
-
-		value === defaultLanguage
-			? newSearchParams.delete("lang")
-			: newSearchParams.set("lang", value);
-
-		router.push(`${pathname}?${newSearchParams}`);
+		// 直接導航到語言路徑
+		if (value === defaultLanguage) {
+			router.push(`/${defaultLanguage}`);
+		} else {
+			router.push(`/${value}`);
+		}
 	}
 
 	return (
-		<Select
-			defaultValue={language.success ? language.data : defaultLanguage}
-			onValueChange={handleLanguageChange}
-		>
+		<Select defaultValue={currentLanguage} onValueChange={handleLanguageChange}>
 			<SelectTrigger className="w-max">
 				<Globe className="mr-2 h-4 w-4" />
 				<SelectValue />
