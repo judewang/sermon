@@ -1,7 +1,7 @@
-import { convertToHtml } from "mammoth";
-import { NodeHtmlMarkdown } from "node-html-markdown";
-import type { ProcessingResult } from "../types";
-import { splitMarkdown } from "../utils/split-markdown";
+import { convertToHtml } from 'mammoth';
+import { NodeHtmlMarkdown } from 'node-html-markdown';
+import type { ProcessingResult } from '../types';
+import { splitMarkdown } from '../utils/split-markdown';
 
 interface DocxElement {
 	type: string;
@@ -21,31 +21,23 @@ function unwrapStrong(child: DocxElement): DocxElement {
 /**
  * 轉換段落元素，設定適當的樣式
  */
-function transformParagraph(
-	element: DocxElement,
-	isTitle?: boolean,
-): DocxElement {
+function transformParagraph(element: DocxElement, isTitle?: boolean): DocxElement {
 	// 處理置中對齊的標題
-	if (element.alignment === "center" && !element.styleId) {
+	if (element.alignment === 'center' && !element.styleId) {
 		return {
 			...element,
-			styleId: isTitle ? "Heading1" : "Heading2",
+			styleId: isTitle ? 'Heading1' : 'Heading2',
 			children: element.children?.map((child) => unwrapStrong(child)),
 		};
 	}
 
 	// 處理全部為粗體的段落作為小標題
 	if (element.children && element.children.length > 0) {
-		const allChildrenBold = element.children.every(
-			(child) => child.isBold === true,
-		);
-		if (
-			allChildrenBold ||
-			(element.children.length === 1 && element.children[0].isBold)
-		) {
+		const allChildrenBold = element.children.every((child) => child.isBold === true);
+		if (allChildrenBold || (element.children.length === 1 && element.children[0].isBold)) {
 			return {
 				...element,
-				styleId: "Heading3",
+				styleId: 'Heading3',
 				children: element.children.map((child) => unwrapStrong(child)),
 			};
 		}
@@ -62,13 +54,11 @@ function transformElement(element: DocxElement, index: number): DocxElement {
 	let newElement = { ...element };
 
 	if (newElement.children) {
-		const children = newElement.children.map((child) =>
-			transformElement(child, index),
-		);
+		const children = newElement.children.map((child) => transformElement(child, index));
 		newElement = { ...newElement, children };
 	}
 
-	if (newElement.type === "paragraph") {
+	if (newElement.type === 'paragraph') {
 		newElement = transformParagraph(newElement, index === 0);
 	}
 
@@ -88,7 +78,7 @@ export async function processDocx(file: File): Promise<ProcessingResult> {
 		{ buffer },
 		{
 			transformDocument: (element) => transformElement(element, index++),
-		},
+		}
 	);
 
 	const html = result.value;

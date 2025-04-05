@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { env } from "@/lib/env";
-import type { allowedLanguages as AllowedLanguagesType } from "@/lib/language-settings";
-import { createXai } from "@ai-sdk/xai";
-import { streamText } from "ai";
-import { createStreamableValue } from "ai/rsc";
-import type { z } from "zod";
+import { env } from '@/lib/env';
+import type { allowedLanguages as AllowedLanguagesType } from '@/lib/language-settings';
+import { createXai } from '@ai-sdk/xai';
+import { streamText } from 'ai';
+import { createStreamableValue } from 'ai/rsc';
+import type { z } from 'zod';
 
 const xai = createXai({
 	apiKey: env.XAI_API_KEY,
@@ -15,55 +15,52 @@ function getLanguageData(language: z.infer<typeof AllowedLanguagesType>): {
 	targetLanguage: string;
 } {
 	switch (language) {
-		case "zh-TW":
+		case 'zh-TW':
 			return {
-				targetLanguage: "Traditional Chinese",
+				targetLanguage: 'Traditional Chinese',
 			};
-		case "zh-CN":
+		case 'zh-CN':
 			return {
-				targetLanguage: "Simplified Chinese",
+				targetLanguage: 'Simplified Chinese',
 			};
-		case "vi":
+		case 'vi':
 			return {
-				targetLanguage: "Vietnamese",
+				targetLanguage: 'Vietnamese',
 			};
-		case "ru":
+		case 'ru':
 			return {
-				targetLanguage: "Russian",
+				targetLanguage: 'Russian',
 			};
-		case "th":
+		case 'th':
 			return {
-				targetLanguage: "Thai",
+				targetLanguage: 'Thai',
 			};
-		case "en":
+		case 'en':
 			return {
-				targetLanguage: "English",
+				targetLanguage: 'English',
 			};
 		default:
 			return {
-				targetLanguage: "Korean",
+				targetLanguage: 'Korean',
 			};
 	}
 }
 
-export async function translateText(
-	text: string,
-	language: z.infer<typeof AllowedLanguagesType>,
-) {
+export async function translateText(text: string, language: z.infer<typeof AllowedLanguagesType>) {
 	// 若為原始語言（韓文），直接返回原文
-	if (language === "ko") {
+	if (language === 'ko') {
 		const stream = createStreamableValue(text);
 		stream.done();
 		return { output: stream.value };
 	}
 
 	const { targetLanguage } = getLanguageData(language);
-	const stream = createStreamableValue("");
+	const stream = createStreamableValue('');
 
 	(async () => {
 		// 構建翻譯提示訊息
 		const { textStream } = streamText({
-			model: xai("grok-2"),
+			model: xai('grok-2'),
 			prompt: `Translate the following text, which is a part of a Korean sermon, into ${targetLanguage}. Follow these instructions:
 
 - This is a portion of a sermon, not the complete sermon.

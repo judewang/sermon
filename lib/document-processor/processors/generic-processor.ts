@@ -1,4 +1,4 @@
-import type { ProcessingResult } from "../types";
+import type { ProcessingResult } from '../types';
 
 /**
  * 通用文件處理器函數 - 處理不支援的格式
@@ -13,7 +13,7 @@ export async function processGeneric(file: File): Promise<ProcessingResult> {
 			originalFileName: file.name,
 			fileSize: file.size,
 			contentType: file.type,
-			error: "不支援的文件格式",
+			error: '不支援的文件格式',
 		},
 	};
 }

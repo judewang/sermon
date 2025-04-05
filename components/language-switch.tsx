@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
 	Select,
@@ -6,23 +6,20 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import {
-	type allowedLanguages,
-	defaultLanguage,
-} from "@/lib/language-settings";
-import { Globe } from "lucide-react";
-import { useRouter } from "next/navigation";
-import type { z } from "zod";
+} from '@/components/ui/select';
+import { type allowedLanguages, defaultLanguage } from '@/lib/language-settings';
+import { Globe } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import type { z } from 'zod';
 
 export const languageOptions = [
-	{ value: "ko", display: "한국어" },
-	{ value: "en", display: "English" },
-	{ value: "zh-TW", display: "正體中文" },
-	{ value: "zh-CN", display: "简体中文" },
-	{ value: "vi", display: "tiếng Việt" },
-	{ value: "ru", display: "Русский Язык" },
-	{ value: "th", display: "ไทย" },
+	{ value: 'ko', display: '한국어' },
+	{ value: 'en', display: 'English' },
+	{ value: 'zh-TW', display: '正體中文' },
+	{ value: 'zh-CN', display: '简体中文' },
+	{ value: 'vi', display: 'tiếng Việt' },
+	{ value: 'ru', display: 'Русский Язык' },
+	{ value: 'th', display: 'ไทย' },
 ] satisfies { value: z.infer<typeof allowedLanguages>; display: string }[];
 
 interface LanguageSwitchProps {

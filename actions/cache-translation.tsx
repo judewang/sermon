@@ -1,7 +1,7 @@
-"use server";
+'use server';
 
-import { kv } from "@vercel/kv";
+import { kv } from '@vercel/kv';
 
 export async function cacheTranslation(key: string, value: string) {
-  await kv.set<string>(key, value);
+	await kv.set<string>(key, value);
 }

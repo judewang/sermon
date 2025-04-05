@@ -1,13 +1,13 @@
-import { Article } from "@/components/article";
-import { LanguageSwitch } from "@/components/language-switch";
-import { MarkdownContent } from "@/components/markdown-content";
-import { Translation } from "@/components/translation";
-import { Skeleton } from "@/components/ui/skeleton";
-import { getLatestArticle } from "@/lib/get-latest-article";
-import { allowedLanguages, defaultLanguage } from "@/lib/language-settings";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { Article } from '@/components/article';
+import { LanguageSwitch } from '@/components/language-switch';
+import { MarkdownContent } from '@/components/markdown-content';
+import { Translation } from '@/components/translation';
+import { Skeleton } from '@/components/ui/skeleton';
+import { getLatestArticle } from '@/lib/get-latest-article';
+import { allowedLanguages, defaultLanguage } from '@/lib/language-settings';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export async function generateMetadata({
 	params,
@@ -43,16 +43,10 @@ export default async function LanguagePage({
 			<Article>
 				{markdownChunks.map((chunk, i) =>
 					language.data === defaultLanguage ? (
-						<MarkdownContent key={`${i}-${language.data}`}>
-							{chunk}
-						</MarkdownContent>
+						<MarkdownContent key={`${i}-${language.data}`}>{chunk}</MarkdownContent>
 					) : (
-						<Translation
-							key={`${i}-${language.data}`}
-							language={language.data}
-							raw={chunk}
-						/>
-					),
+						<Translation key={`${i}-${language.data}`} language={language.data} raw={chunk} />
+					)
 				)}
 			</Article>
 		</main>

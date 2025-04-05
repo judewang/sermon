@@ -7,7 +7,7 @@
 export function splitMarkdown(mdString: string, maxLength = 3500): string[] {
 	const paragraphs = mdString.split(/\n{2,}/);
 	const result: string[] = [];
-	let current = "";
+	let current = '';
 
 	for (const paragraph of paragraphs) {
 		// 如果當前片段加上新段落會超出長度限制，則開始新的片段

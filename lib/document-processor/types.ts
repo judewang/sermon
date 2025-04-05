@@ -14,10 +14,7 @@ export type ProcessFunction = (file: File) => Promise<ProcessingResult>;
 /**
  * 儲存函數類型 - 儲存處理結果到存儲系統
  */
-export type SaveFunction = (
-	result: ProcessingResult,
-	key: string,
-) => Promise<void>;
+export type SaveFunction = (result: ProcessingResult, key: string) => Promise<void>;
 
 /**
  * 處理器配置 - 包含處理和儲存函數

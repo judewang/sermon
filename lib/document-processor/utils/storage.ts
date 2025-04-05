@@ -1,9 +1,9 @@
-"use server";
+'use server';
 
-import { env } from "@/lib/env";
-import { kv } from "@vercel/kv";
-import dayjs from "dayjs";
-import isoWeek from "dayjs/plugin/isoWeek";
+import { env } from '@/lib/env';
+import { kv } from '@vercel/kv';
+import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
 
 dayjs.extend(isoWeek);
 
@@ -19,9 +19,7 @@ export async function generateStorageKey(customKey?: string): Promise<string> {
 	// 使用 Day.js 計算最接近的下一個星期日的日期
 	const nextSunday = dayjs(today).isoWeekday(7);
 
-	return env.NODE_ENV === "development"
-		? "test"
-		: `sermon-${nextSunday.format("YYYY-MM-DD")}`;
+	return env.NODE_ENV === 'development' ? 'test' : `sermon-${nextSunday.format('YYYY-MM-DD')}`;
 }
 
 /**
@@ -29,10 +27,7 @@ export async function generateStorageKey(customKey?: string): Promise<string> {
  * @param key 儲存的 key
  * @param content 要儲存的內容
  */
-export async function saveToKVStorage(
-	key: string,
-	content: string[],
-): Promise<void> {
+export async function saveToKVStorage(key: string, content: string[]): Promise<void> {
 	await kv.set<string[]>(key, content);
 }
 

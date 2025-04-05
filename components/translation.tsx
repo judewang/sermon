@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { translateText } from "@/app/actions";
-import type { allowedLanguages as AllowedLanguagesType } from "@/lib/language-settings";
-import { readStreamableValue } from "ai/rsc";
-import { useEffect, useState } from "react";
-import type { z } from "zod";
-import { MarkdownContent } from "./markdown-content";
+import { translateText } from '@/app/actions';
+import type { allowedLanguages as AllowedLanguagesType } from '@/lib/language-settings';
+import { readStreamableValue } from 'ai/rsc';
+import { useEffect, useState } from 'react';
+import type { z } from 'zod';
+import { MarkdownContent } from './markdown-content';
 
 interface ArticleProps {
 	language: z.infer<typeof AllowedLanguagesType>;
@@ -13,11 +13,11 @@ interface ArticleProps {
 }
 
 export function Translation({ language, raw }: ArticleProps) {
-	const [translatedContent, setTranslatedContent] = useState<string>("");
+	const [translatedContent, setTranslatedContent] = useState<string>('');
 
 	useEffect(() => {
 		// 若為原始語言（韓文），直接顯示原文
-		if (language === "ko") {
+		if (language === 'ko') {
 			setTranslatedContent(raw);
 			return;
 		}
