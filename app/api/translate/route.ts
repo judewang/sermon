@@ -16,7 +16,7 @@ const xai = createOpenAI({
 export async function POST(req: Request) {
 	const { messages } = await req.json();
 
-	const result = await streamText({
+	const result = streamText({
 		model: xai("grok-beta"),
 		messages,
 	});

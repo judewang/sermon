@@ -9,12 +9,12 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "^0.0.72",
+		"@ai-sdk/openai": "^1.0.0",
 		"@radix-ui/react-select": "^2.1.6",
 		"@t3-oss/env-nextjs": "^0.7.3",
 		"@tailwindcss/typography": "^0.5.13",
 		"@vercel/kv": "^1.0.1",
-		"ai": "^3.4.33",
+		"ai": "^4.0.0",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"dayjs": "^1.11.11",

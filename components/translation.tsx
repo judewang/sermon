@@ -45,7 +45,7 @@ export function Translation({ language, raw }: ArticleProps) {
 		initialMessages: [
 			{ id, role: "system", content: "You are a Bible-savvy pastor." },
 		],
-		streamMode: "text",
+		streamProtocol: "text",
 		body: {
 			key,
 		},
