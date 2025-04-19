@@ -8,7 +8,7 @@ import { createStreamableValue } from 'ai/rsc';
 import type { z } from 'zod';
 
 const xai = createXai({
-	apiKey: env.XAI_API_KEY,
+	apiKey: env.API_KEY,
 });
 
 function getLanguageData(language: z.infer<typeof AllowedLanguagesType>): {

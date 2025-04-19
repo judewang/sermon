@@ -1,16 +1,10 @@
 'use client';
 
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 import { type allowedLanguages, defaultLanguage } from '@/lib/language-settings';
 import { Globe } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { z } from 'zod';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 export const languageOptions = [
 	{ value: 'ko', display: '한국어' },
