@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 /**
  * 轉換上傳的文檔為 Markdown 並儲存
  */
-export async function convertDocument(_prev: unknown, formData: FormData) {
+export async function convertDocument(formData: FormData) {
 	const file: File | null = formData.get('file') as unknown as File;
 
 	if (!file) {
