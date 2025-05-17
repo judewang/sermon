@@ -9,7 +9,8 @@ export const allowedLanguages = z.enum([
   "zh-TW",
   "vi",
   "ru",
-  "th"
+  "th",
+  "lo"
 ]);
 
 export const foreignLanguages = allowedLanguages.options.filter(
