@@ -1,11 +1,10 @@
 "use client";
 
-import { convertDocxToHtml } from "@/actions/convert";
-import { PropsWithChildren } from "react";
-import { useFormState } from "react-dom";
+import { convertDocument } from "@/actions/convert-document";
+import { type PropsWithChildren, useActionState } from "react";
 
 export function Form({ children }: Readonly<PropsWithChildren>) {
-  const [_, formAction] = useFormState(convertDocxToHtml, null);
+	const [_, formAction] = useActionState(convertDocument, null);
 
-  return <form action={formAction}>{children}</form>;
+	return <form action={formAction}>{children}</form>;
 }
