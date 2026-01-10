@@ -63,7 +63,7 @@ export async function translateText(
 	(async () => {
 		// 構建翻譯提示訊息
 		const { textStream } = streamText({
-			model: xai("grok-4-1-fast-non-reasoning"),
+			model: xai("grok-4-1-fast-reasoning"),
 			prompt: `Translate the following text, which is a part of a Korean sermon, into ${targetLanguage}. Follow these instructions:
 
 - This is a portion of a sermon, not the complete sermon.

@@ -1,7 +1,6 @@
 import { convertToHtml } from "mammoth";
 import { NodeHtmlMarkdown } from "node-html-markdown";
 import type { ProcessingResult } from "../types";
-import { splitMarkdown } from "../utils/split-markdown";
 
 interface DocxElement {
 	type: string;
@@ -93,7 +92,6 @@ export async function processDocx(file: File): Promise<ProcessingResult> {
 
 	const html = result.value;
 	const markdown = NodeHtmlMarkdown.translate(html);
-	// const markdownChunks = splitMarkdown(markdown);
 
 	return {
 		markdown: [markdown],
