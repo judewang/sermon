@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { defaultLanguage } from "./lib/language-settings";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
 	const pathname = request.nextUrl.pathname;
 
-	// 根路徑重定向到默認語言
+	// Redirect root path to default language
 	if (pathname === "/") {
 		return NextResponse.redirect(new URL(`/${defaultLanguage}`, request.url));
 	}
