@@ -1,11 +1,11 @@
 "use client";
 
-import { translateText } from "@/app/actions";
 import type { allowedLanguages as AllowedLanguagesType } from "@/lib/language-settings";
-import { readStreamableValue } from "ai/rsc";
-import { useEffect, useState } from "react";
+import { useCompletion } from "@ai-sdk/react";
+import { useEffect, useRef } from "react";
 import type { z } from "zod";
 import { MarkdownContent } from "./markdown-content";
+import { TranslationThinking } from "./translation-thinking";
 
 interface ArticleProps {
 	language: z.infer<typeof AllowedLanguagesType>;
@@ -13,28 +13,27 @@ interface ArticleProps {
 }
 
 export function Translation({ language, raw }: ArticleProps) {
-	const [translatedContent, setTranslatedContent] = useState<string>("");
+	const hasStarted = useRef(false);
+
+	const { completion, complete } = useCompletion({
+		api: "/api/translate",
+		body: { language },
+	});
 
 	useEffect(() => {
-		// 若為原始語言（韓文），直接顯示原文
-		if (language === "ko") {
-			setTranslatedContent(raw);
-			return;
-		}
+		if (language === "ko") return;
+		if (hasStarted.current) return;
+		hasStarted.current = true;
+		complete(raw);
+	}, [language, raw, complete]);
 
-		async function fetchTranslation() {
-			// 調用 server action 獲取翻譯流
-			const { output } = await translateText(raw, language);
+	if (language === "ko") {
+		return <MarkdownContent>{raw}</MarkdownContent>;
+	}
 
-			// 讀取流式數據
-			for await (const delta of readStreamableValue(output)) {
-				// 清理輸出並更新狀態
-				setTranslatedContent((currentContent) => `${currentContent}${delta}`);
-			}
-		}
+	if (completion.length === 0) {
+		return <TranslationThinking language={language} />;
+	}
 
-		fetchTranslation();
-	}, [language, raw]);
-
-	return <MarkdownContent>{translatedContent}</MarkdownContent>;
+	return <MarkdownContent>{completion}</MarkdownContent>;
 }
