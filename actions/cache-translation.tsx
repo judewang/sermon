@@ -1,7 +1,7 @@
 "use server";
 
-import { kv } from "@vercel/kv";
+import { redis } from "@/lib/redis";
 
 export async function cacheTranslation(key: string, value: string) {
-  await kv.set<string>(key, value);
+  await redis.set(key, value);
 }
