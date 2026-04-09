@@ -9,7 +9,7 @@ export function Submit() {
     <button
       type="submit"
       disabled={pending}
-      className="rounded border px-4 py-2"
+      className="w-full rounded border px-4 py-2 sm:w-auto"
     >
       {pending ? "Uploading..." : "Upload"}
     </button>
