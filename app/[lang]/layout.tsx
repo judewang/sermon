@@ -1,4 +1,5 @@
 import { allowedLanguages } from "@/lib/language-settings";
+import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 
@@ -26,7 +27,10 @@ export default async function LanguageLayout({
 
 	return (
 		<html lang={htmlLang} suppressHydrationWarning>
-			<body className={inter.className}>{children}</body>
+			<body className={inter.className}>
+				{children}
+				<Analytics />
+			</body>
 		</html>
 	);
 }
