@@ -1,7 +1,7 @@
 "use server";
 
 import { env } from "@/lib/env";
-import { kv } from "@vercel/kv";
+import { redis } from "@/lib/redis";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 
@@ -33,7 +33,7 @@ export async function saveToKVStorage(
 	key: string,
 	content: string[],
 ): Promise<void> {
-	await kv.set<string[]>(key, content);
+	await redis.set(key, content);
 }
 
 /**
@@ -42,5 +42,5 @@ export async function saveToKVStorage(
  * @returns 儲存的內容，如果不存在則返回 null
  */
 export async function getFromKVStorage(key: string): Promise<string[] | null> {
-	return await kv.get<string[]>(key);
+	return await redis.get<string[]>(key);
 }
