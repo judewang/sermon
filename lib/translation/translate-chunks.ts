@@ -6,6 +6,8 @@ import type { TranslationPipelineOptions } from "./types";
 
 const SLIDING_CONTEXT_CHARS = 500;
 const MAX_RETRIES = 2;
+// Marker sent between chunks so the frontend can show a loading indicator
+export const CHUNK_BOUNDARY_MARKER = "\n\n<!-- CHUNK_LOADING -->\n\n";
 
 /**
  * Build the base translation system prompt.
@@ -39,7 +41,7 @@ async function translateChunkWithRetry(
 	for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
 		try {
 			const userPrompt = slidingContext
-				? `[Context from previous section for continuity — do not re-translate this part]\n${slidingContext}\n\n---\n\n[Translate the following]\n${chunkContent}`
+				? `<previous_translation_context>\n${slidingContext}\n</previous_translation_context>\n\nIMPORTANT: The above is for continuity only. Do NOT include it in your output. Translate ONLY the Korean text below. Your output MUST be entirely in the target language, never Korean.\n\n<translate_this>\n${chunkContent}\n</translate_this>`
 				: chunkContent;
 
 			const result = streamText({
@@ -162,12 +164,12 @@ export function createStreamingTranslationPipeline(
 							: "";
 
 					if (i > 0) {
-						controller.enqueue("\n\n");
+						controller.enqueue(CHUNK_BOUNDARY_MARKER);
 					}
 
 					const userPrompt = slidingContext
-						? `[Context from previous section for continuity — do not re-translate this part]\n${slidingContext}\n\n---\n\n[Translate the following]\n${chunk.content}`
-						: chunk.content;
+						? `<previous_translation_context>\n${slidingContext}\n</previous_translation_context>\n\nIMPORTANT: The above is for continuity only. Do NOT include it in your output. Translate ONLY the Korean text below. Your output MUST be entirely in the target language, never Korean.\n\n<translate_this>\n${chunk.content}\n</translate_this>`
+						: `Translate the following Korean text. Your output MUST be entirely in the target language, never Korean.\n\n${chunk.content}`;
 
 					let chunkTranslation = "";
 					let lastError: Error | null = null;
@@ -180,6 +182,12 @@ export function createStreamingTranslationPipeline(
 								prompt: userPrompt,
 							});
 
+							// Stream token-by-token for real-time feedback.
+							// Note: if the stream fails mid-way, partial tokens are already
+							// sent to the client. Retry will append the full re-translated
+							// chunk, which may cause some duplication. This is an acceptable
+							// tradeoff for real-time streaming — the alternative (buffering)
+							// would eliminate the streaming UX benefit.
 							for await (const token of result.textStream) {
 								chunkTranslation += token;
 								controller.enqueue(token);
@@ -189,6 +197,7 @@ export function createStreamingTranslationPipeline(
 							break;
 						} catch (err) {
 							lastError = err as Error;
+							chunkTranslation = "";
 							if (attempt < MAX_RETRIES) {
 								await new Promise((r) =>
 									setTimeout(r, 1000 * (attempt + 1)),
