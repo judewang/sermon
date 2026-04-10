@@ -15,9 +15,10 @@ interface ArticleProps {
 export function Translation({ language, raw }: ArticleProps) {
 	const hasStarted = useRef(false);
 
-	const { completion, complete } = useCompletion({
+	const { completion, complete, error } = useCompletion({
 		api: "/api/translate",
 		body: { language },
+		streamProtocol: "text",
 	});
 
 	useEffect(() => {
@@ -31,9 +32,19 @@ export function Translation({ language, raw }: ArticleProps) {
 		return <MarkdownContent>{raw}</MarkdownContent>;
 	}
 
-	if (completion.length === 0) {
+	if (completion.length === 0 && !error) {
 		return <TranslationThinking language={language} />;
 	}
 
-	return <MarkdownContent>{completion}</MarkdownContent>;
+	return (
+		<>
+			{completion.length > 0 && <MarkdownContent>{completion}</MarkdownContent>}
+			{error && (
+				<div className="mt-4 rounded-md bg-red-50 p-4 text-sm text-red-700">
+					Translation error: {error.message}. Partial content above may be
+					incomplete.
+				</div>
+			)}
+		</>
+	);
 }

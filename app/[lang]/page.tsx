@@ -41,18 +41,18 @@ export default async function LanguagePage({
 				</Suspense>
 			</div>
 			<Article>
-				{markdownChunks.map((chunk, i) =>
-					language.data === defaultLanguage ? (
+				{language.data === defaultLanguage ? (
+					markdownChunks.map((chunk, i) => (
 						<MarkdownContent key={`${i}-${language.data}`}>
 							{chunk}
 						</MarkdownContent>
-					) : (
-						<Translation
-							key={`${i}-${language.data}`}
-							language={language.data}
-							raw={chunk}
-						/>
-					),
+					))
+				) : (
+					<Translation
+						key={language.data}
+						language={language.data}
+						raw={markdownChunks.join("\n\n")}
+					/>
 				)}
 			</Article>
 		</main>
