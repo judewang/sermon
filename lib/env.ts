@@ -5,6 +5,7 @@ export const env = createEnv({
 	server: {
 		PERPLEXITY_API_KEY: z.string(),
 		XAI_API_KEY: z.string(),
+		UPLOAD_SECRET: z.string().min(16),
 		BASE_URL: z
 			.string()
 			.url()
