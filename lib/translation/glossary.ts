@@ -1,6 +1,8 @@
 import type { LanguageModel } from "ai";
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { redis } from "@/lib/redis";
+import { foreignLanguages, getLanguageData } from "@/lib/language-settings";
 import type { GlossaryEntry } from "./types";
 
 const glossarySchema = z.object({
@@ -72,6 +74,53 @@ ${sample}`,
 			return [];
 		}
 	}
+}
+
+/**
+ * Build the Redis key for a cached glossary.
+ */
+function glossaryRedisKey(sermonKey: string, lang: string): string {
+	return `glossary:${sermonKey}:${lang}`;
+}
+
+/**
+ * Retrieve a cached glossary from Redis.
+ */
+export async function getCachedGlossary(
+	sermonKey: string,
+	lang: string,
+): Promise<GlossaryEntry[] | null> {
+	return redis.get<GlossaryEntry[]>(glossaryRedisKey(sermonKey, lang));
+}
+
+/**
+ * Store a glossary in Redis.
+ */
+export async function cacheGlossary(
+	sermonKey: string,
+	lang: string,
+	entries: GlossaryEntry[],
+): Promise<void> {
+	// Cache for 30 days
+	await redis.set(glossaryRedisKey(sermonKey, lang), entries, { ex: 60 * 60 * 24 * 30 });
+}
+
+/**
+ * Generate glossaries for all non-Korean languages and cache them in Redis.
+ * Intended to run in the background after document upload.
+ */
+export async function generateAndCacheAllGlossaries(
+	sermonKey: string,
+	text: string,
+	model: LanguageModel,
+): Promise<void> {
+	await Promise.all(
+		foreignLanguages.map(async (lang) => {
+			const { targetLanguage } = getLanguageData(lang);
+			const entries = await extractGlossary(text, targetLanguage, model);
+			await cacheGlossary(sermonKey, lang, entries);
+		}),
+	);
 }
 
 /**

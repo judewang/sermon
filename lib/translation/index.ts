@@ -1,5 +1,11 @@
 export { estimateTokens, shouldSplit } from "./estimate-tokens";
-export { extractGlossary, formatGlossaryPrompt } from "./glossary";
+export {
+	cacheGlossary,
+	extractGlossary,
+	formatGlossaryPrompt,
+	generateAndCacheAllGlossaries,
+	getCachedGlossary,
+} from "./glossary";
 export { splitSermon } from "./split-sermon";
 export {
 	createStreamingTranslationPipeline,

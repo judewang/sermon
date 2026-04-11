@@ -5,6 +5,7 @@ import { useCompletion } from "@ai-sdk/react";
 import { useEffect, useMemo, useRef } from "react";
 import type { z } from "zod";
 import { MarkdownContent } from "./markdown-content";
+import { TranslationSkeleton } from "./translation-skeleton";
 import { TranslationThinking } from "./translation-thinking";
 
 const CHUNK_LOADING_MARKER = "<!-- CHUNK_LOADING -->";
@@ -12,14 +13,15 @@ const CHUNK_LOADING_MARKER = "<!-- CHUNK_LOADING -->";
 interface ArticleProps {
 	language: z.infer<typeof AllowedLanguagesType>;
 	raw: string;
+	sermonKey?: string;
 }
 
-export function Translation({ language, raw }: ArticleProps) {
+export function Translation({ language, raw, sermonKey }: ArticleProps) {
 	const hasStarted = useRef(false);
 
 	const { completion, complete, error, isLoading } = useCompletion({
 		api: "/api/translate",
-		body: { language },
+		body: { language, sermonKey },
 		streamProtocol: "text",
 	});
 
@@ -53,9 +55,7 @@ export function Translation({ language, raw }: ArticleProps) {
 			{displayContent.length > 0 && (
 				<MarkdownContent>{displayContent}</MarkdownContent>
 			)}
-			{isWaitingForNextChunk && (
-				<TranslationThinking language={language} />
-			)}
+			{isWaitingForNextChunk && <TranslationSkeleton />}
 			{error && (
 				<div className="mt-4 rounded-md bg-red-50 p-4 text-sm text-red-700">
 					Translation error: {error.message}. Partial content above may be

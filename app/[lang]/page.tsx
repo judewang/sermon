@@ -29,7 +29,7 @@ export default async function LanguagePage({
 
 	if (!language.success) notFound();
 
-	const { markdownChunks } = await getLatestArticle();
+	const { markdownChunks, sermonKey } = await getLatestArticle();
 
 	if (!markdownChunks) return <div>Nothing to share this week</div>;
 
@@ -52,6 +52,7 @@ export default async function LanguagePage({
 						key={language.data}
 						language={language.data}
 						raw={markdownChunks.join("\n\n")}
+						sermonKey={sermonKey}
 					/>
 				)}
 			</Article>

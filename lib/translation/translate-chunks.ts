@@ -1,6 +1,6 @@
 import type { LanguageModel } from "ai";
 import { streamText } from "ai";
-import { extractGlossary, formatGlossaryPrompt } from "./glossary";
+import { extractGlossary, formatGlossaryPrompt, getCachedGlossary } from "./glossary";
 import { splitSermon } from "./split-sermon";
 import type { TranslationPipelineOptions } from "./types";
 
@@ -77,7 +77,7 @@ export function createTranslationPipelineStream(
 	model: LanguageModel,
 	options: TranslationPipelineOptions,
 ): ReadableStream<string> {
-	const { sourceText, targetLanguage } = options;
+	const { sourceText, targetLanguage, sermonKey, languageCode } = options;
 
 	return new ReadableStream<string>({
 		async start(controller) {
@@ -85,12 +85,17 @@ export function createTranslationPipelineStream(
 				// Split sermon into chunks
 				const chunks = splitSermon(sourceText);
 
-				// Extract glossary
-				const glossaryEntries = await extractGlossary(
-					sourceText,
-					targetLanguage,
-					model,
-				);
+				// Try cached glossary first, fallback to live extraction
+				let glossaryEntries = sermonKey && languageCode
+					? await getCachedGlossary(sermonKey, languageCode)
+					: null;
+				if (!glossaryEntries) {
+					glossaryEntries = await extractGlossary(
+						sourceText,
+						targetLanguage,
+						model,
+					);
+				}
 				const glossaryPrompt = formatGlossaryPrompt(glossaryEntries);
 				const systemPrompt = buildSystemPrompt(targetLanguage, glossaryPrompt);
 
@@ -138,18 +143,24 @@ export function createStreamingTranslationPipeline(
 	model: LanguageModel,
 	options: TranslationPipelineOptions,
 ): ReadableStream<string> {
-	const { sourceText, targetLanguage } = options;
+	const { sourceText, targetLanguage, sermonKey, languageCode } = options;
 
 	return new ReadableStream<string>({
 		async start(controller) {
 			try {
 				const chunks = splitSermon(sourceText);
 
-				const glossaryEntries = await extractGlossary(
-					sourceText,
-					targetLanguage,
-					model,
-				);
+				// Try cached glossary first, fallback to live extraction
+				let glossaryEntries = sermonKey && languageCode
+					? await getCachedGlossary(sermonKey, languageCode)
+					: null;
+				if (!glossaryEntries) {
+					glossaryEntries = await extractGlossary(
+						sourceText,
+						targetLanguage,
+						model,
+					);
+				}
 				const glossaryPrompt = formatGlossaryPrompt(glossaryEntries);
 				const systemPrompt = buildSystemPrompt(targetLanguage, glossaryPrompt);
 

@@ -35,7 +35,7 @@ Source text:
 `;
 
 export async function POST(req: Request) {
-	const { prompt, language } = await req.json();
+	const { prompt, language, sermonKey } = await req.json();
 
 	const parsed = allowedLanguages.safeParse(language);
 	if (!parsed.success) {
@@ -59,6 +59,7 @@ export async function POST(req: Request) {
 		sourceText: prompt,
 		targetLanguage,
 		languageCode: parsed.data,
+		sermonKey: typeof sermonKey === "string" ? sermonKey : undefined,
 	});
 
 	// Convert the string ReadableStream to a byte stream for Response
