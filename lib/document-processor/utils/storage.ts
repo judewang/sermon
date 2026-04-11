@@ -33,7 +33,8 @@ export async function saveToKVStorage(
 	key: string,
 	content: string[],
 ): Promise<void> {
-	await redis.set(key, content);
+	// TTL: 90 days in seconds
+	await redis.set(key, content, { ex: 60 * 60 * 24 * 90 });
 }
 
 /**
