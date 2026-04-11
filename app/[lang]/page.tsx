@@ -29,7 +29,7 @@ export default async function LanguagePage({
 
 	if (!language.success) notFound();
 
-	const { markdownChunks } = await getLatestArticle();
+	const { markdownChunks, sermonKey } = await getLatestArticle();
 
 	if (!markdownChunks) return <div>Nothing to share this week</div>;
 
@@ -41,18 +41,19 @@ export default async function LanguagePage({
 				</Suspense>
 			</div>
 			<Article>
-				{markdownChunks.map((chunk, i) =>
-					language.data === defaultLanguage ? (
+				{language.data === defaultLanguage ? (
+					markdownChunks.map((chunk, i) => (
 						<MarkdownContent key={`${i}-${language.data}`}>
 							{chunk}
 						</MarkdownContent>
-					) : (
-						<Translation
-							key={`${i}-${language.data}`}
-							language={language.data}
-							raw={chunk}
-						/>
-					),
+					))
+				) : (
+					<Translation
+						key={language.data}
+						language={language.data}
+						raw={markdownChunks.join("\n\n")}
+						sermonKey={sermonKey}
+					/>
 				)}
 			</Article>
 		</main>

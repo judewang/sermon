@@ -1,4 +1,7 @@
 /**
+ * @deprecated Use `splitSermon` from `@/lib/translation/split-sermon` instead.
+ * This function does not handle heading binding or blockquote preservation.
+ *
  * 將長文本的 Markdown 分割為較小的片段
  * @param mdString Markdown 文本字串
  * @param maxLength 每個片段的最大長度 (預設: 3500)

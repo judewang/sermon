@@ -2,8 +2,12 @@
 
 import { getDocumentProcessor } from "@/lib/document-processor";
 import { generateStorageKey } from "@/lib/document-processor/utils/storage";
+import { env } from "@/lib/env";
+import { generateAndCacheAllGlossaries } from "@/lib/translation/glossary";
+import { createXai } from "@ai-sdk/xai";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 
 /**
  * 轉換上傳的文檔為 Markdown 並儲存
@@ -29,6 +33,14 @@ export async function convertDocument(_prev: unknown, formData: FormData) {
 
 	// 儲存處理結果
 	await processor.saveToStorage(result, key);
+
+	// Background: pre-generate glossaries for all languages
+	after(async () => {
+		const xai = createXai({ apiKey: env.XAI_API_KEY });
+		const model = xai("grok-4-1-fast-reasoning");
+		const fullText = result.markdown.join("\n\n");
+		await generateAndCacheAllGlossaries(key, fullText, model);
+	});
 
 	// 更新快取並重定向
 	revalidatePath("/");
