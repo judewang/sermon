@@ -1,13 +1,18 @@
 import type { LanguageModel } from "ai";
 import { streamText } from "ai";
-import { extractGlossary, formatGlossaryPrompt, getCachedGlossary } from "./glossary";
+import {
+	cacheGlossary,
+	extractGlossary,
+	formatGlossaryPrompt,
+	getCachedGlossary,
+} from "./glossary";
 import { splitSermon } from "./split-sermon";
 import type { TranslationPipelineOptions } from "./types";
 
 const SLIDING_CONTEXT_CHARS = 500;
 const MAX_RETRIES = 2;
-const STREAM_VALIDATION_MIN_LETTERS = 120;
-const STREAM_VALIDATION_MAX_CHARS = 500;
+const STREAM_VALIDATION_MIN_LETTERS = 32;
+const STREAM_VALIDATION_MAX_CHARS = 180;
 const KOREAN_LEAK_MIN_HANGUL = 6;
 const KOREAN_LEAK_RATIO = 0.2;
 // Marker sent between chunks so the frontend can show a loading indicator
@@ -247,6 +252,9 @@ export function createTranslationPipelineStream(
 						targetLanguage,
 						model,
 					);
+					if (sermonKey && languageCode) {
+						await cacheGlossary(sermonKey, languageCode, glossaryEntries);
+					}
 				}
 				const glossaryPrompt = formatGlossaryPrompt(glossaryEntries);
 				const systemPrompt = buildSystemPrompt(targetLanguage, glossaryPrompt);
@@ -313,6 +321,9 @@ export function createStreamingTranslationPipeline(
 						targetLanguage,
 						model,
 					);
+					if (sermonKey && languageCode) {
+						await cacheGlossary(sermonKey, languageCode, glossaryEntries);
+					}
 				}
 				const glossaryPrompt = formatGlossaryPrompt(glossaryEntries);
 				const systemPrompt = buildSystemPrompt(targetLanguage, glossaryPrompt);
