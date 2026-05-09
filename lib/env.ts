@@ -5,6 +5,13 @@ export const env = createEnv({
 	server: {
 		PERPLEXITY_API_KEY: z.string(),
 		XAI_API_KEY: z.string(),
+		XAI_TRANSLATION_MODEL: z.string().min(1).default("grok-4.3"),
+		XAI_TRANSLATION_REASONING_EFFORT: z
+			.enum(["default", "none", "low", "high"])
+			.default("none"),
+		XAI_TRANSLATION_FALLBACK_REASONING_EFFORT: z
+			.enum(["default", "none", "low", "high", "off"])
+			.default("low"),
 		UPLOAD_SECRET: z.string().min(16),
 		BASE_URL: z
 			.string()

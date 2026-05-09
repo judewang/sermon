@@ -10,6 +10,7 @@ export { splitSermon } from "./split-sermon";
 export {
 	createStreamingTranslationPipeline,
 	createTranslationPipelineStream,
+	createValidatedTextStream,
 } from "./translate-chunks";
 export type {
 	GlossaryEntry,
