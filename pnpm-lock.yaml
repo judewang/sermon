@@ -14,7 +14,7 @@ importers:
   .:
     dependencies:
       '@ai-sdk/react':
-        specifier: ^3.0.0
+        specifier: ^3.0.99
         version: 3.0.99(react@19.2.4)(zod@3.25.76)
       '@ai-sdk/xai':
         specifier: ^3.0.57
