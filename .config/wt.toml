@@ -1,0 +1,72 @@
+# Worktrunk project config for html-converter (Next.js 16 App Router, pnpm).
+# Each worktree gets an isolated dev server on a deterministic port.
+# Docs: https://worktrunk.dev  •  regenerate via the devtools:worktrunk-config skill.
+
+# --- Worktree creation -------------------------------------------------------
+
+# Install deps on creation. pnpm hard-links from its global store, so this is
+# fast and needs no node_modules copy.
+pre-start = "pnpm install"
+
+# After install: generate Next.js route types + next-env.d.ts. Both are
+# gitignored, so a fresh worktree flags missing types until the first dev/build.
+# typegen is cheap (no full build). No copy-ignored (pnpm) so there's no race.
+[post-start]
+typegen = "pnpm exec next typegen"
+
+# --- Quality gates (disabled) ------------------------------------------------
+# Personal project, no CI. Left commented so they're one uncomment away if you
+# ever want wt-driven commits/merges gated.
+
+# Lint before committing (fires only on wt-driven commits):
+# [pre-commit]
+# lint = "pnpm run lint"
+
+# Before merging to base, run read-only gates concurrently (no tests exist):
+# [pre-merge]
+# lint = "pnpm run lint"
+# typecheck = "pnpm exec tsc --noEmit"
+
+# --- Dev server per worktree -------------------------------------------------
+# Single app. hash_port derives a stable 10000-19999 port from the branch name,
+# identical on any machine. Started manually (not post-start) — no server is
+# auto-spawned on worktree creation.
+#
+# When adding a second app/server, update ALL of these in lockstep:
+#   dev / dev-url / ports / kill-dev alias + [post-remove] kill-dev.
+[aliases]
+# Start this worktree's dev server (foreground).  wt step dev
+dev = "pnpm dev -- --port {{ branch | hash_port }}"
+
+# Print this worktree's dev URL.  wt step dev-url
+dev-url = "echo http://localhost:{{ branch | hash_port }}"
+
+# Report whether the dev port is LISTENING or free (spot orphan servers).
+ports = '''
+port={{ branch | hash_port }}
+pids=$(lsof -ti :$port -sTCP:LISTEN 2>/dev/null | tr '\n' ',' | sed 's/,$//')
+if [ -n "$pids" ]; then
+  printf 'app  %s  LISTENING  pid=%s\n' "$port" "$pids"
+else
+  printf 'app  %s  free\n' "$port"
+fi
+'''
+
+# Kill this worktree's dev server (cleans up orphans).  wt step kill-dev
+kill-dev = '''
+port={{ branch | hash_port }}
+pids=$(lsof -ti :$port -sTCP:LISTEN 2>/dev/null)
+[ -n "$pids" ] && kill $pids || true
+'''
+
+# wt list URL column + Claude Code statusline (dims when the port isn't listening).
+[list]
+url = "http://localhost:{{ branch | hash_port }}"
+
+# Stop the dev server when a worktree is removed (covers removal while running).
+[post-remove]
+kill-dev = '''
+port={{ branch | hash_port }}
+pids=$(lsof -ti :$port -sTCP:LISTEN 2>/dev/null)
+[ -n "$pids" ] && kill $pids || true
+'''

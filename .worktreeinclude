@@ -1,0 +1,8 @@
+# Files copied (not symlinked) into every new worktree.
+# These are gitignored/untracked local state a fresh worktree lacks.
+
+# Local environment secrets needed for `next dev`/`build` to run
+.env.local
+
+# Claude Code per-project local settings (permission approvals, etc.)
+.claude/settings.local.json
